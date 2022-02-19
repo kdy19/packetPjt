@@ -1,0 +1,323 @@
+{% extends 'base.html' %}
+{% block content %}
+    <br>
+    <br>
+    <div class="row">
+        <div class="col-8">
+            <canvas id="topTenIpSrc" width="700" height="300"></canvas>
+        </div>
+        <div class="col-4">
+            <canvas id="topTenPortSrc" width="500" height="300"></canvas>
+        </div>
+    </div>
+    <br>
+    <br>
+    <br>
+    <div class="row">
+        <div class="col-8">
+            <canvas id="topTenIpDst" width="700" height="300"></canvas>
+        </div>
+        <div class="col-4">
+            <canvas id="topTenPortDst" width="500" height="300"></canvas>
+        </div>
+    </div>
+    <br>
+    <br>
+    <br>
+    <div class="row">
+        <canvas id="topTenIpPortSrc" width="1000" height="300"></canvas>
+    </div>
+    <br>
+    <br>
+    <br>
+    <div class="row">
+        <canvas id="topTenIpPortDst" width="1000" height="300"></canvas>
+    </div>
+    <br>
+    <br>
+    <br>
+    <script type="text/javascript">
+            var context1 = document
+                .getElementById('topTenIpSrc')
+                .getContext('2d');
+            var topIpSrc = new Chart(context1, {
+                type: 'bar',
+                data: {
+                    labels: [
+                        {% for i in src_ip %}
+                            "{{ i[0] }}",
+                        {% endfor %}
+                    ],
+                    datasets: [
+                        {
+                            label: 'Top 10 IP (Source)',
+                            fill: false,
+                            data: [
+                                {% for i in src_ip %}
+                                    {{ i[1] }},
+                                {% endfor %}
+                            ],
+                            backgroundColor: [
+                                {% for i in range(10) %}
+                                    "{{ rgb_back_list[0][i] }}",
+                                {% endfor %}
+                            ],
+                            borderColor: [
+                                {% for i in range(10) %}
+                                    "{{ rgb_border_list[0][i] }}",
+                                {% endfor %}
+                            ],
+                            borderWidth: 1
+                        }
+                    ]
+                },
+                options: {
+                    responsive: false,
+                    scales: {
+                        yAxes: [
+                            {
+                                ticks: {
+                                    beginAtZero: true
+                                }
+                            }
+                        ]
+                    }
+                }
+            });
+            var context2 = document
+                .getElementById('topTenPortSrc')
+                .getContext('2d');
+            var topPortSrc = new Chart(context2, {
+                type: 'bar',
+                data: {
+                    labels: [
+                        {% for i in src_port %}
+                            "{{ i[0] }}",
+                        {% endfor %}
+                    ],
+                    datasets: [
+                        {
+                            label: 'Top 10 Port (Source)',
+                            fill: false,
+                            data: [
+                                {% for i in src_port %}
+                                    {{ i[1] }},
+                                {% endfor %}
+                            ],
+                            backgroundColor: [
+                                {% for i in range(10) %}
+                                    "{{ rgb_back_list[0][i] }}",
+                                {% endfor %}
+                            ],
+                            borderColor: [
+                                {% for i in range(10) %}
+                                    "{{ rgb_back_list[0][i] }}",
+                                {% endfor %}
+                            ],
+                            borderWidth: 1
+                        }
+                    ]
+                },
+                options: {
+                    responsive: false,
+                    scales: {
+                        yAxes: [
+                            {
+                                ticks: {
+                                    beginAtZero: true
+                                }
+                            }
+                        ]
+                    }
+                }
+            });
+            var context3 = document
+                .getElementById('topTenIpDst')
+                .getContext('2d');
+            var topIpDst = new Chart(context3, {
+                type: 'bar',
+                data: {
+                    labels: [
+                        {% for i in dst_ip %}
+                            "{{ i[0] }}",
+                        {% endfor %}
+                    ],
+                    datasets: [
+                        {
+                            label: 'Top 10 IP (Destination)',
+                            fill: false,
+                            data: [
+                                {% for i in dst_ip %}
+                                    {{ i[1] }},
+                                {% endfor %}
+                            ],
+                            backgroundColor: [
+                                {% for i in range(10) %}
+                                    "{{ rgb_back_list[1][i] }}",
+                                {% endfor %}
+                            ],
+                            borderColor: [
+                                {% for i in range(10) %}
+                                    "{{ rgb_back_list[1][i] }}",
+                                {% endfor %}
+                            ],
+                            borderWidth: 1
+                        }
+                    ]
+                },
+                options: {
+                    responsive: false,
+                    scales: {
+                        yAxes: [
+                            {
+                                ticks: {
+                                    beginAtZero: true
+                                }
+                            }
+                        ]
+                    }
+                }
+            });
+            var context4 = document
+                .getElementById('topTenPortDst')
+                .getContext('2d');
+            var topPortDst = new Chart(context4, {
+                type: 'bar',
+                data: {
+                    labels: [
+                        {% for i in dst_port %}
+                            "{{ i[0] }}",
+                        {% endfor %}
+                    ],
+                    datasets: [
+                        {
+                            label: 'Top 10 Port (Destination)',
+                            fill: false,
+                            data: [
+                                {% for i in dst_port %}
+                                    {{ i[1] }},
+                                {% endfor %}
+                            ],
+                            backgroundColor: [
+                                {% for i in range(10) %}
+                                    "{{ rgb_back_list[1][i] }}",
+                                {% endfor %}
+                            ],
+                            borderColor: [
+                                {% for i in range(10) %}
+                                    "{{ rgb_back_list[1][i] }}",
+                                {% endfor %}
+                            ],
+                            borderWidth: 1
+                        }
+                    ]
+                },
+                options: {
+                    responsive: false,
+                    scales: {
+                        yAxes: [
+                            {
+                                ticks: {
+                                    beginAtZero: true
+                                }
+                            }
+                        ]
+                    }
+                }
+            });
+            var context5 = document
+                .getElementById('topTenIpPortSrc')
+                .getContext('2d');
+            var topIpPortSrc = new Chart(context5, {
+                type: 'bar',
+                data: {
+                    labels: [
+                        {% for i in src_ip_port %}
+                            "{{ i[0] }}",
+                        {% endfor %}
+                    ],
+                    datasets: [
+                        {
+                            label: 'Top 10 IP:PORT (Source)',
+                            fill: false,
+                            data: [
+                                {% for i in src_ip_port %}
+                                    {{ i[1] }},
+                                {% endfor %}
+                            ],
+                            backgroundColor: [
+                                {% for i in range(10) %}
+                                    "{{ rgb_back_list[2][i] }}",
+                                {% endfor %}
+                            ],
+                            borderColor: [
+                                {% for i in range(10) %}
+                                    "{{ rgb_back_list[2][i] }}",
+                                {% endfor %}
+                            ],
+                            borderWidth: 1
+                        }
+                    ]
+                },
+                options: {
+                    responsive: false,
+                    scales: {
+                        yAxes: [
+                            {
+                                ticks: {
+                                    beginAtZero: true
+                                }
+                            }
+                        ]
+                    }
+                }
+            });
+            var context6 = document
+                .getElementById('topTenIpPortDst')
+                .getContext('2d');
+            var topTenIpPortDst = new Chart(context6, {
+                type: 'bar',
+                data: {
+                    labels: [
+                        {% for i in dst_ip_port %}
+                            "{{ i[0] }}",
+                        {% endfor %}
+                    ],
+                    datasets: [
+                        {
+                            label: 'Top 10 IP:Port (Destination)',
+                            fill: false,
+                            data: [
+                                {% for i in dst_ip_port %}
+                                    {{ i[1] }},
+                                {% endfor %}
+                            ],
+                            backgroundColor: [
+                                {% for i in range(10) %}
+                                    "{{ rgb_back_list[3][i] }}",
+                                {% endfor %}
+                            ],
+                            borderColor: [
+                                {% for i in range(10) %}
+                                    "{{ rgb_back_list[3][i] }}",
+                                {% endfor %}
+                            ],
+                            borderWidth: 1
+                        }
+                    ]
+                },
+                options: {
+                    responsive: false,
+                    scales: {
+                        yAxes: [
+                            {
+                                ticks: {
+                                    beginAtZero: true
+                                }
+                            }
+                        ]
+                    }
+                }
+            });
+        </script>
+{% endblock %}

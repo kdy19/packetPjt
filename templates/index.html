@@ -1,0 +1,145 @@
+{% extends 'base.html' %}
+{% block content %}
+    <br>
+    <br>
+    <br>
+    <br>
+    <div>
+        <div class="card text-center">
+            <div class="card-body">
+                <form action="/submit" enctype="multipart/form-data" method="POST">
+                    <label for="formFileLg" class="form-label">file input example (pcap)</label>
+                    <input class="form-control form-control-lg" id="file" name="file" type="file"><br>
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <br>
+    <br>
+    <br>
+    <div class="row">
+        <div class="col-4">
+            <canvas id="cpu" width="300" height="300"></canvas>
+            <p>
+                <strong>CPU</strong><br>
+                <strong>Used: {{ hwData['cpu']['used'] }}%</strong>
+                <strong style="text-align: right;">Free: {{ hwData['cpu']['free'] }}%</strong>
+            </p>
+        </div>
+        <div class="col-4">
+            <canvas id="mem" width="300" height="300"></canvas>
+            <p>
+                <strong>Memory</strong><br>
+                <strong>Used: {{ hwData['mem']['used'] }}GB    </strong>
+                <strong style="text-align: right;">Free: {{ hwData['mem']['free'] }}GB</strong>
+            </p>
+        </div>
+        <div class="col-4">
+            <canvas id="disk" width="300" height="300"></canvas>
+            <p>
+                <strong>Disk</strong><br>
+                <strong>Used: {{ hwData['disk']['used'] }}GB    </strong>
+                <strong style="text-align: right;">Free: {{ hwData['disk']['free'] }}GB</strong>
+            </p>
+        </div>
+    </div>
+    <script>
+        var context1 = document
+                .getElementById('cpu')
+                .getContext('2d');
+            var cpu = new Chart(context1, {
+                type: 'doughnut',
+                data: {
+                    labels: [
+                        'used', 'free'
+                    ],
+                    datasets: [
+                        {
+                            label: 'CPU',
+                            fill: false,
+                            data: [
+                                {{ hwData['cpu']['used'] }}, {{ hwData['cpu']['free'] }}
+                            ],
+                            backgroundColor: [
+                                'rgba(13, 110, 253, 0.2)',
+                                'rgba(149, 154, 163, 0.2)',
+                            ],
+                            borderColor: [
+                                'rgba(13, 110, 253, 1)',
+                                'rgba(149, 154, 163, 1)',
+                            ],
+                            borderWidth: 1
+                        }
+                    ]
+                },
+                options: {
+                    responsive: false,
+                }
+            });
+        var context2 = document
+            .getElementById('mem')
+            .getContext('2d');
+        var mem = new Chart(context2, {
+            type: 'doughnut',
+            data: {
+                labels: [
+                    'used', 'free',
+                ],
+                datasets: [
+                    {
+                        label: 'Memory',
+                        fill: false,
+                        data: [
+                            {{ hwData['mem']['used'] }}, {{ hwData['mem']['free'] }}
+                        ],
+                        backgroundColor: [
+                            'rgba(13, 110, 253, 0.2)',
+                            'rgba(149, 154, 163, 0.2)',
+                        ],
+                        borderColor: [
+                            'rgba(13, 110, 253, 1)',
+                            'rgba(149, 154, 163, 1)',
+                        ],
+                        borderWidth: 1
+                    }
+                ]
+            },
+            options: {
+                responsive: false,
+            }
+        });
+        var context3 = document
+            .getElementById('disk')
+            .getContext('2d');
+        var disk = new Chart(context3, {
+            type: 'doughnut',
+            data: {
+                labels: [
+                    'used', 'free'
+                ],
+                datasets: [
+                    {
+                        label: 'Disk',
+                        fill: false,
+                        data: [
+                            {{ hwData['disk']['used'] }}, {{ hwData['disk']['free'] }}
+                        ],
+                        backgroundColor: [
+                            'rgba(13, 110, 253, 0.2)',
+                            'rgba(149, 154, 163, 0.2)',
+                        ],
+                        borderColor: [
+                            'rgba(13, 110, 253, 1)',
+                            'rgba(149, 154, 163, 1)',
+                        ],
+                        borderWidth: 1
+                    }
+                ]
+            },
+            options: {
+                responsive: false,
+            }
+        });
+    </script>
+{% endblock %}

@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block content %}
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">FileName</th>
+            <th scope="col">FileHash</th>
+            <th scope="col">Date</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for li in data %}
+            <tr>
+                <th scope="row">{{ li[0] }}</th>
+                <td>{{ li[1] }}</td>
+                <td><a href="/view/{{ li[2] }}" style="text-decoration: none; color: black;">{{ li[2] }}</a></td>
+                <td>{{ li[3] }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
