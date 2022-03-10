@@ -15,7 +15,7 @@ def analysis(file_name: str, file_hash_sha256: str) -> None:
     pcap_hash_information = dict()
     pcap_packet_information = dict()
 
-    with open(f'./sandbox/{file_hash_sha256}', 'rb') as f:
+    with open(f'./data/file/{file_hash_sha256}', 'rb') as f:
         data = f.read()
         pcap_hash_information['md5'] = hashlib.md5(data).hexdigest()
         pcap_hash_information['sha256'] = hashlib.sha256(data).hexdigest()
@@ -35,7 +35,7 @@ def analysis(file_name: str, file_hash_sha256: str) -> None:
     dst_ip_port_list = collections.defaultdict(int)
 
     pcap_protocol_list = {'TCP': 0, 'UDP': 0}
-    packet_data = rdpcap(f'./sandbox/{file_hash_sha256}')
+    packet_data = rdpcap(f'./data/file/{file_hash_sha256}')
     for packet in packet_data:
         try:
             s_ip = packet['IP'].src
@@ -85,7 +85,7 @@ def analysis(file_name: str, file_hash_sha256: str) -> None:
     pcap_packet_information['dst_ip_port'] = dst_ip_port_list
 
     pcap_information['info']['packet'] = pcap_packet_information
-    with open(f'./json/{file_hash_sha256}.json', 'wt') as f:
+    with open(f'./data/json/{file_hash_sha256}.json', 'wt') as f:
         json.dump(pcap_information, f, indent=4)
 
     with sqlite3.connect('DB.db') as conn:

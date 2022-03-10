@@ -2,18 +2,18 @@ from flask import Flask
 from flask import request
 from flask import render_template
 
-from scapy.all import rdpcap
 import psutil
 
 from analy import analysis
 
 import multiprocessing
-import datetime
 import hashlib
 import sqlite3
 import random
 import shutil
 import json
+import os
+
 
 app = Flask(__name__)
 app.config['MAX_CONTENT_LENGTH'] = 1024 * 1024 * 1024
@@ -47,8 +47,8 @@ def index():
     hw_information['cpu'] = {'used': cpu_used, 'free': 100 - cpu_used}
     hw_information['mem'] = {'used': round(psutil.virtual_memory().used/1024/1024/1024, 1),
                              'free': round(psutil.virtual_memory().free/1024/1024/1024, 1)}
-    hw_information['disk'] = {'used': round(psutil.disk_usage('C:\\').used/1024/1024/1024, 0),
-                              'free': round(psutil.disk_usage('C:\\').free/1024/1024/1024, 0)}
+    hw_information['disk'] = {'used': round(psutil.disk_usage('/').used/1024/1024/1024, 0),
+                              'free': round(psutil.disk_usage('/').free/1024/1024/1024, 0)}
 
     return render_template('index.html', hwData=hw_information)
 
@@ -56,15 +56,24 @@ def index():
 @app.route('/submit', methods=['POST'])
 def file_upload():
     if request.method == 'POST':
-
         f = request.files['file']
-        f.save(f'./uploads/{f.filename}')
+        f.save(f'./data/file/{f.filename}')
 
-        with open(f'./uploads/{f.filename}', 'rb') as fi:
+        with open(f'./data/file/{f.filename}', 'rb') as fi:
             data = fi.read()
             file_hash_sha256 = hashlib.sha256(data).hexdigest()
 
-        shutil.copy2(f'./uploads/{f.filename}', f'./sandbox/{file_hash_sha256}')
+        if os.path.isfile(f'./data/json/{file_hash_sha256}.json'):
+            os.remove(f'./data/file/{f.filename}')
+            return f'''
+                <script>
+                    alert('기존 분석 파일이 존재합니다.');
+                    location.href='/view/{file_hash_sha256}';
+                </script>
+            '''
+
+        shutil.copy2(f'./data/file/{f.filename}', f'./data/file/{file_hash_sha256}')
+        os.remove(f'./data/file/{f.filename}')
 
         p = multiprocessing.Process(target=analysis, args=(f.filename, file_hash_sha256,))
         p.start()
@@ -94,7 +103,7 @@ def recent():
 
 @app.route('/view/<filehash>')
 def view(filehash):
-    with open(f'./json/{filehash}.json', 'rt') as f:
+    with open(f'./data/json/{filehash}.json', 'rt') as f:
         data = json.load(f)
 
     src_ip = list(data['info']['packet']['src_ip'].items())[:10]
@@ -110,6 +119,11 @@ def view(filehash):
     return render_template('view.html', src_ip=src_ip, src_port=src_port, src_ip_port=src_ip_port,
                            dst_ip=dst_ip, dst_port=dst_port, dst_ip_port=dst_ip_port,
                            rgb_border_list=rgb_border_list, rgb_back_list=rgb_back_list)
+
+
+@app.route('/test')
+def test():
+    return render_template('side.html')
 
 
 if __name__ == '__main__':
