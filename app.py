@@ -1,5 +1,6 @@
 from flask import Flask
 from flask import request
+from flask import make_response
 from flask import render_template
 
 import psutil
@@ -11,6 +12,7 @@ import hashlib
 import sqlite3
 import random
 import shutil
+import time
 import json
 import os
 
@@ -42,15 +44,18 @@ def color() -> list:
 
 @app.route('/')
 def index():
-    cpu_used = psutil.cpu_percent()
-    hw_information = dict()
-    hw_information['cpu'] = {'used': cpu_used, 'free': 100 - cpu_used}
-    hw_information['mem'] = {'used': round(psutil.virtual_memory().used/1024/1024/1024, 1),
-                             'free': round(psutil.virtual_memory().free/1024/1024/1024, 1)}
-    hw_information['disk'] = {'used': round(psutil.disk_usage('/').used/1024/1024/1024, 0),
-                              'free': round(psutil.disk_usage('/').free/1024/1024/1024, 0)}
+    return render_template('index.html')
 
-    return render_template('index.html', hwData=hw_information)
+
+@app.route('/live-data')
+def live_data():
+    cpu_used = psutil.cpu_percent()
+    hw_information = [[time.time()*1000, cpu_used],
+                      [time.time()*1000, round(psutil.virtual_memory().used/1024/1024/1024, 1)]]
+
+    response = make_response(json.dumps(hw_information))
+    response.content_type = 'application/json'
+    return response
 
 
 @app.route('/submit', methods=['POST'])
@@ -121,10 +126,5 @@ def view(filehash):
                            rgb_border_list=rgb_border_list, rgb_back_list=rgb_back_list)
 
 
-@app.route('/test')
-def test():
-    return render_template('side.html')
-
-
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=8888)
+    app.run(host='127.0.0.1', port=8888)
